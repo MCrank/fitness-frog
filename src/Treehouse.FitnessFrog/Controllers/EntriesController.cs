@@ -78,10 +78,8 @@ namespace Treehouse.FitnessFrog.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            //TODO Get the requested entry from the repository
             Entry entry = _entriesRepository.GetEntry((int) id);
 
-            //TODO Return a status of not found if entry not found
             if (entry ==  null)
             {
                 return HttpNotFound();
@@ -97,9 +95,6 @@ namespace Treehouse.FitnessFrog.Controllers
         {
             ValidateEntry(entry);
 
-            //TODO If the entry is valid...
-            // Use the repository to update the entry
-            // Redirect the user to the Entris List page
             if (ModelState.IsValid)
             {
                 _entriesRepository.UpdateEntry(entry);
@@ -118,7 +113,22 @@ namespace Treehouse.FitnessFrog.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            return View();
+            Entry entry = _entriesRepository.GetEntry((int) id);
+
+            if (entry == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(entry);
+        }
+
+        [HttpPost]
+        public ActionResult Delete(int id)
+        {
+            _entriesRepository.DeleteEntry(id);
+
+            return RedirectToAction("Index");
         }
 
         private void ValidateEntry(Entry entry)
